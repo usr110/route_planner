@@ -52,16 +52,14 @@ updated_route_graphhopper <- function(from, to, vehicle = "bike", silent = TRUE,
   
   climb <- NA # to set elev variable up
   
-  # # get elevation data if it was a bike trip
-  # if(vehicle == "bike"){
-  #   change_elev <- obj$path$descend + obj$paths$ascend
-  # }else{
-  #   change_elev <- NA
-  # }
+  descend <- NA
+  ascend <- NA
   
-  descend <- obj$path$descend
-  ascend <- obj$paths$ascend
-  
+  # get elevation data for both bike and foot trips
+  if(vehicle == "bike" || vehicle == "foot"){
+    descend <- obj$path$descend
+    ascend <- obj$paths$ascend
+  }
   
   # Attribute data for the route
   df <- data.frame(
