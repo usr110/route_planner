@@ -1,7 +1,7 @@
 # Update stplan'r route_graphhopper function with updated_route_graphhopper
 # This function changes in two aspects:
 # 1. Returns descend and ascend values separately of a route
-# 2. Returns these two variables for all sort of vehicle (including food)
+# 2. Returns these two variables for foot routes as well (bikes and foot)
 updated_route_graphhopper <- function(from, to, vehicle = "bike", silent = TRUE, pat = NULL, base_url = "https://graphhopper.com"){
   
   # Convert character strings to lon/lat if needs be
