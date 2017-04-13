@@ -13,7 +13,8 @@ data_walk <- filter(dat, travelmode == 1)
 for (i in 1:nrow(data_bike)){
   start_point <- c(data_bike$startlong[i], data_bike$startlat[i])
   end_point <- c(data_bike$endlong[i], data_bike$endlat[i])
-  
+  # Exclude routes which return errors from the API
+  # Reason  being the API can't calculate routes for them, or the start and end points are too close to each other
   if ( !i %in% c(42, 50, 66)){
     rdata <- updated_route_graphhopper(start_point, end_point, vehicle = "bike")
     data_bike$time[i] <- rdata$time
@@ -36,6 +37,8 @@ for (i in 1:nrow(data_walk)){
   start_point <- c(data_walk$startlong[i], data_walk$startlat[i])
   end_point <- c(data_walk$endlong[i], data_walk$endlat[i])
   dist <- geosphere::distm (start_point, end_point, fun = distHaversine)
+  # Exclude routes which return errors from the API
+  # Reason  being the API can't calculate routes for them, or the start and end points are too close to each other
   if ( !i %in% c(242, 337, 369, 373, 380, 381, 402, 448, 449, 490, 506, 611, 613, 614, 752, 753, 781, 782,
                  797, 829, 883, 886, 935, 936, 946, 948, 951, 963, 1049, 1059, 1062, 1085, 1115, 1151, 1152, 1153,
                  1155, 1156, 1174, 1322, 1381, 1382, 1387, 1417, 1435, 1468, 1493, 1522, 1524, 1534, 1547, 1619, 1634,
