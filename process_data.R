@@ -1,5 +1,7 @@
 library(dplyr)
 library(stplanr)
+# Read updated_route_graphhopper function
+source("route_functions.R")
 # Read data
 dat <- read.csv("GpsTrips.csv", header = T, as.is = T, stringsAsFactors = F)
 # Subset cycling trips
@@ -11,35 +13,23 @@ data_walk <- filter(dat, travelmode == 1)
 for (i in 1:nrow(data_bike)){
   start_point <- c(data_bike$startlong[i], data_bike$startlat[i])
   end_point <- c(data_bike$endlong[i], data_bike$endlat[i])
-  cat(i, " - ", start_point, " - ", end_point, "\n")
-  if ( !i %in% c(42, 50, 66)){#!identical(start_point, end_point))
-    rdata <- route_graphhopper(start_point, end_point, vehicle = "bike")
+  
+  if ( !i %in% c(42, 50, 66)){
+    rdata <- updated_route_graphhopper(start_point, end_point, vehicle = "bike")
     data_bike$time[i] <- rdata$time
     data_bike$dist[i] <- rdata$dist
-    data_bike$change_elev[i] <- rdata$change_elev
+    data_bike$descend[i] <- rdata$descend
+    data_bike$ascend[i] <- rdata$ascend
+    
   }else {
     
     data_bike$time[i] <- 0
     data_bike$dist[i] <- 0
-    data_bike$change_elev[i] <- 0
+    data_bike$descend[i] <- 0
+    data_bike$ascend[i] <- 0
 
   }
 }
-
-
-# Identify if the start and end points are not identical
-#spoint <- ggmap::revgeocode(c(data_walk$startlong[i], data_walk$startlat[i]))
-#epoint <- ggmap::revgeocode(c(data_walk$endlong[i], data_walk$endlat[i]))
-
-
-# else{
-#   cat(i, " - ", spoint, " - ", epoint, "\n")
-# }    # "time"        "dist"        "change_elev"
-#    data_walk$time[i] <- rdata$time
-#    data_walk$dist[i] <- rdata$dist
-#    data_walk$change_elev[i] <- rdata$change_elev
-#  }
-
 
 # Routes for walking trips
 for (i in 1:nrow(data_walk)){
@@ -54,17 +44,16 @@ for (i in 1:nrow(data_walk)){
     rdata <- updated_route_graphhopper(start_point, end_point, vehicle = "foot")
     data_walk$time[i] <- rdata$time
     data_walk$dist[i] <- rdata$dist
-    # data_walk$change_elev[i] <- rdata$change_elev
     data_walk$descend[i] <- rdata$descend
     data_walk$ascend[i] <- rdata$ascend
     
-    cat(i, " - ", dist , " - ", start_point, " - ", end_point, " - ", rdata$descend, " - ", rdata$ascend, "\n")
   }
   else {
+    
     data_walk$time[i] <- 0
     data_walk$dist[i] <- 0
     data_walk$descend[i] <- 0
     data_walk$ascend[i] <- 0
-    #data_walk$change_elev[i] <- 0
+    
   }
 }
