@@ -1,9 +1,10 @@
 # Update stplan'r route_graphhopper function with updated_route_graphhopper
 # This function changes in two aspects:
 # 1. Returns descend and ascend values separately of a route
-# 2. Returns these two variables for foot routes as well (bikes and foot)
+# 2. Returns these two variables for all modes
 updated_route_graphhopper <- function(from, to, vehicle = "bike", silent = TRUE, pat = NULL, base_url = "https://graphhopper.com"){
   
+
   # Convert character strings to lon/lat if needs be
   if(is.character(from) | is.character(to)){
     from <- rev(RgoogleMaps::getGeoCode(from))
@@ -48,19 +49,15 @@ updated_route_graphhopper <- function(from, to, vehicle = "bike", silent = TRUE,
       stop("Invalid API key")
     }
   }
-  route <- sp::SpatialLines(list(sp::Lines(list(sp::Line(obj$paths$points[[1]][[1]][,1:2])), ID = "1")))
   
-  climb <- NA # to set elev variable up
+  if (nrow(obj$paths$points$coordinates[[1]]) > 1)
+    route <- sp::SpatialLines(list(sp::Lines(list(sp::Line(obj$paths$points[[1]][[1]][,1:2])), ID = "1")))
+  else
+    return()
   
-  descend <- NA
-  ascend <- NA
-  
-  # get elevation data for both bike and foot trips
-  if(vehicle == "bike" || vehicle == "foot"){
-    descend <- obj$path$descend
-    ascend <- obj$paths$ascend
-  }
-  
+  descend <- obj$path$descend
+  ascend <- obj$paths$ascend
+
   # Attribute data for the route
   df <- data.frame(
     time = obj$paths$time / (1000 * 60),
