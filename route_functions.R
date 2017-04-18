@@ -53,7 +53,7 @@ updated_route_graphhopper <- function(from, to, vehicle = "bike", silent = TRUE,
   if (nrow(obj$paths$points$coordinates[[1]]) > 1)
     route <- sp::SpatialLines(list(sp::Lines(list(sp::Line(obj$paths$points[[1]][[1]][,1:2])), ID = "1")))
   else
-    return()
+    return(NULL)
   
   descend <- obj$path$descend
   ascend <- obj$paths$ascend
